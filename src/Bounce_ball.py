@@ -1,12 +1,18 @@
 import cv2
 import numpy as np
-from aiortc.contrib.signaling import (TcpSocketSignaling, 
-                                      BYE)
-from aiortc import (RTCPeerConnection, 
-                    RTCSessionDescription,
-                    VideoStreamTrack)
+from aiortc import (VideoStreamTrack)
 from av import VideoFrame
-W, L = 480, 640 
+
+class Ball():
+    def __init__(self, x, y, r, color):
+        self.x = x
+        self.y = y
+        self.r = r
+        self.color = color
+
+    def increment_position(self, dx, dy):
+        self.x += dx
+        self.y += dy
             
         
 class BounceBallStreamTrack(VideoStreamTrack):
@@ -15,37 +21,40 @@ class BounceBallStreamTrack(VideoStreamTrack):
     """
 
     def __init__(self):
-        super().__init__()  # don't forget this!
+        super().__init__()
         self.counter = 0
         self.frames = []
-        self.x = 100
-        self.y = 100
+        self.frameWidth = 480
+        self.frameHeight = 640
+        self.ball = Ball(x=100, 
+                         y=100, 
+                         r=20, 
+                         color=(255,0,0))
         self.dx = 5
         self.dy = -5
-        self.r = 20
-        for i in range(30):
-            self.frames.append(self.get_next_frame())
+        
+    def get_next_frame(self):    
+        img = np.zeros((self.frameHeight, self.frameWidth, 3),
+                        dtype='uint8') 
+        
+        cv2.circle(img,
+                   (self.ball.x, self.ball.y),
+                   self.ball.r,
+                   self.ball.color,
+                   -1)
 
-        
-    def get_next_frame(self):
-        img = np.zeros((W,L,3),dtype='uint8')
-        
-    
-        img = np.zeros((L,W,3),dtype='uint8') 
-        self.x = self.x+self.dx
-        self.y = self.y+self.dy
-        cv2.circle(img,(self.x,self.y),self.r,(255,0,0),-1)
-        if self.y >=L-self.r:
+        self.ball.increment_position(self.dx, self.dy)
+
+        if self.ball.y >=self.frameHeight-self.ball.r:
             self.dy *= -1
-        elif self.y<=self.r:
+        elif self.ball.y<=self.ball.r:
             self.dy *= -1
-        if self.x >=W-self.r:
+        if self.ball.x >=self.frameWidth-self.ball.r:
             self.dx *= -1
-        elif self.x<=self.r:
+        elif self.ball.x<=self.ball.r:
             self.dx *= -1
         
-        res = VideoFrame.from_ndarray(
-                    img, format="rgb24")
+        res = VideoFrame.from_ndarray(img, format="rgb24")
         return res
 
 

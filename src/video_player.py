@@ -1,9 +1,7 @@
 import cv2
-import numpy
 import asyncio
 from aiortc.contrib.media import (MediaStreamTrack,
                                   MediaStreamError)
-from av import VideoFrame
 
 class VideoStreamPlayer():
     def __init__(self, title:str):

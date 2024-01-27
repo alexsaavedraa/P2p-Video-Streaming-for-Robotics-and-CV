@@ -2,7 +2,6 @@ from aiortc.contrib.signaling import (TcpSocketSignaling,
                                       BYE)
 from aiortc import (RTCPeerConnection, 
                     RTCSessionDescription)
-from aiortc.contrib.media import MediaRecorder
 import asyncio
 
 from video_player import VideoStreamPlayer
