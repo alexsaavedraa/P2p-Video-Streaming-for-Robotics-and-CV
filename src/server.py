@@ -2,8 +2,9 @@ from aiortc.contrib.signaling import TcpSocketSignaling
 from aiortc import (RTCPeerConnection, 
                     VideoStreamTrack)
 import asyncio
+import socket
 
-HOST = "127.0. 0.1"
+HOST = "127.0.0.1"
 PORT = 8080
 
 async def run_server(signaling, pc):
