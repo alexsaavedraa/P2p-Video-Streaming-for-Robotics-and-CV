@@ -1,0 +1,4 @@
+numpy
+aiortc
+opencv-python
+multiprocessing
