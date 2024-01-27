@@ -1,4 +1,5 @@
-from aiortc.contrib.signaling import TcpSocketSignaling, BYE
+from aiortc.contrib.signaling import (TcpSocketSignaling, 
+                                      BYE)
 from aiortc import (RTCPeerConnection, 
                     VideoStreamTrack)
 import asyncio
@@ -35,6 +36,5 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         pass
     finally:
-        # cleanup
         loop.run_until_complete(signaling.close())
         loop.run_until_complete(pc.close())
