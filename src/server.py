@@ -1,10 +1,9 @@
 from aiortc.contrib.signaling import (TcpSocketSignaling, 
                                       BYE)
 from aiortc import (RTCPeerConnection, 
-                    RTCSessionDescription,
-                    VideoStreamTrack)
+                    RTCSessionDescription)
 import asyncio
-from Bounce_ball import Bounce_ball
+from bounce_ball import BounceBallStreamTrack
 
 HOST = "127.0.0.1"
 PORT = 1234
@@ -27,7 +26,7 @@ if __name__ == "__main__":
     print("Initializing Server...")
     signaling = TcpSocketSignaling(host=HOST, port=PORT)
     pc = RTCPeerConnection()
-    track = Bounce_ball()
+    track = BounceBallStreamTrack()
     pc.addTrack(track)
     loop = asyncio.get_event_loop()
     try:

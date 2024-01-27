@@ -6,16 +6,10 @@ from aiortc import (RTCPeerConnection,
                     RTCSessionDescription,
                     VideoStreamTrack)
 from av import VideoFrame
-W,L = 480, 640 
-
-
+W, L = 480, 640 
             
-
-
-
-
-
-class Bounce_ball(VideoStreamTrack):
+        
+class BounceBallStreamTrack(VideoStreamTrack):
     """
     A video track that returns an animated flag.
     """

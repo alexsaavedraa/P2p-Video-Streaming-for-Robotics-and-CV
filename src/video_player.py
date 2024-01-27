@@ -6,6 +6,9 @@ from aiortc.contrib.media import (MediaStreamTrack,
 from av import VideoFrame
 
 class VideoStreamPlayer():
+    def __init__(self, title:str):
+        self.title = title
+
     def addTrack(self, track: MediaStreamTrack):
         self.track = track
 
@@ -23,11 +26,10 @@ class VideoStreamPlayer():
         while frame:
             try:
                 frame = await self.track.recv()
-                print("Received frame", i)
-                i+=1
-            except MediaStreamError:
+            except MediaStreamError: 
                 return
-      
+            frame_array = frame.to_rgb().to_ndarray()
+            cv2.imshow(self.title, frame_array) 
             cv2.waitKey(10)
-            cv2.imshow('Frame', frame.to_rgb().to_ndarray()) 
+            i+=1
         
