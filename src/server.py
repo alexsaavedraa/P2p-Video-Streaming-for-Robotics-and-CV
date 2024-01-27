@@ -1,6 +1,7 @@
 from aiortc.contrib.signaling import (TcpSocketSignaling, 
                                       BYE)
 from aiortc import (RTCPeerConnection, 
+                    RTCSessionDescription,
                     VideoStreamTrack)
 import asyncio
 
@@ -15,6 +16,8 @@ async def run_server(signaling, pc):
     await signaling.send(pc.localDescription)
     while True:
         obj = await signaling.receive()
+        if isinstance(obj, RTCSessionDescription):
+            await pc.setRemoteDescription(obj)
         if obj is BYE:
             print("Exiting")
             break
