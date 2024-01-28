@@ -8,16 +8,16 @@ from bounce_ball import BounceBallStreamTrack
 HOST = "127.0.0.1"
 PORT = 1234
 
-def process_message(message):
-    print("Processing Message:", message)
+def process_message(message, track):
+    print("Processing Message:", message, track.frames[-1])
 
-async def run_server(signaling, pc):
+async def run_server(signaling, pc, track):
     @pc.on("datachannel")
     def on_datachannel(channel):
         print("channel created by remote")
         @channel.on("message")
         def on_message(message):
-            process_message(message)
+            process_message(message, track)
 
     await signaling.connect()
     await pc.setLocalDescription(await pc.createOffer())
@@ -46,7 +46,9 @@ if __name__ == "__main__":
         loop.run_until_complete(
             run_server(
                 signaling, 
-                pc
+                pc,
+                track
+
             )
         )
     except KeyboardInterrupt:

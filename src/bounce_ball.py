@@ -61,6 +61,7 @@ class BounceBallStreamTrack(VideoStreamTrack):
     async def recv(self):
         pts, time_base = await self.next_timestamp()
         frame = self.get_next_frame()
+        self.frames.append([self.counter, self.ball.x, self.ball.y])
         frame.pts = pts
         frame.time_base = time_base
         self.counter += 1
