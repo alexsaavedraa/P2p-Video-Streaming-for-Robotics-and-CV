@@ -8,7 +8,8 @@ from bounce_ball import BounceBallStreamTrack
 HOST = "127.0.0.1"
 PORT = 1234
 
-
+def process_message(message):
+    print("From Client:", message)
 
 async def run_server(signaling, pc):
     @pc.on("datachannel")
@@ -16,7 +17,7 @@ async def run_server(signaling, pc):
         print("channel created by remote")
         @channel.on("message")
         def on_message(message):
-            print("From Client", message)
+            process_message(message)
 
     await signaling.connect()
     await pc.setLocalDescription(await pc.createOffer())
@@ -33,9 +34,12 @@ if __name__ == "__main__":
     print("Initializing Server...")
     signaling = TcpSocketSignaling(host=HOST, port=PORT)
     pc = RTCPeerConnection()
+
     track = BounceBallStreamTrack()
     pc.addTrack(track)
+
     channel = pc.createDataChannel("coordinates")
+    
     loop = asyncio.get_event_loop()
     try:
         loop.run_until_complete(

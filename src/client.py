@@ -47,8 +47,7 @@ async def run_client(signaling, pc, player):
         print("Receiving %s" % track.kind)
         player.addTrack(track)
 
-    channel = pc.createDataChannel("chat")
-    print("channel created by local")
+    channel = pc.createDataChannel("cooordinates")
 
     async def send_circle_coordinates():
         while True:
@@ -88,6 +87,7 @@ if __name__ == "__main__":
     pc = RTCPeerConnection()
     player = VideoStreamPlayer("Nimble Challenge", image_queue)
     loop = asyncio.get_event_loop()
+
     try:
         loop.run_until_complete(
             run_client(
@@ -99,7 +99,6 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         pass
     finally:
-
         #Close all processes
         termination_event.set()
         process_a.join()
