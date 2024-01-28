@@ -24,7 +24,7 @@ class VideoStreamPlayer():
         frame = True
         i = 0
         while frame:
-            print(self.x.value)
+            # print(self.x.value)
             try:
                 frame = await self.track.recv()
             except MediaStreamError: 

@@ -1,11 +1,12 @@
 from aiortc.contrib.signaling import (TcpSocketSignaling, 
                                       BYE)
+from aiortc.mediastreams import VIDEO_PTIME
 from aiortc import (RTCPeerConnection, 
                     RTCSessionDescription)
 import asyncio
 import cv2
 import numpy as np
-import time
+from ctypes import c_int
 
 from video_player import VideoStreamPlayer
 import multiprocessing
@@ -20,8 +21,8 @@ def process_frame_array(image_queue, termination_event,x,y):
         if image is not None:
             result = process_images(image)
             if result is not None:
-                x.Value('i', result[0])
-                y.Value('i', result[1])
+                x.value = result[0]
+                y.value = result[1]
     print("Exiting process a")
 
 def process_images(frame_array):
@@ -51,8 +52,8 @@ async def run_client(signaling, pc, player):
 
     async def send_circle_coordinates():
         while True:
-            channel.send(str(time.time()))
-            await asyncio.sleep(1)
+            channel.send(f"({x.value}, {y.value})" )
+            await asyncio.sleep(VIDEO_PTIME)
 
     @channel.on("open")
     def on_open():
@@ -71,14 +72,15 @@ async def run_client(signaling, pc, player):
             break
 
         
-
 if __name__ == "__main__":
     print("Initializing Client...")   
     #Multiprocess setup here
     image_queue = multiprocessing.Queue()
     termination_event = multiprocessing.Event()
-    x = multiprocessing.Value('i')
-    y = multiprocessing.Value('i')
+
+    x = multiprocessing.Value(c_int, 0)
+    y = multiprocessing.Value(c_int, 0)
+
     process_a = multiprocessing.Process(target=process_frame_array, args=(image_queue,termination_event, x,y))
     process_a.start()
 
