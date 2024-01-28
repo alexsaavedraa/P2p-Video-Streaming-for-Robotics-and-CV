@@ -48,17 +48,17 @@ async def run_client(signaling, pc, player):
         print("Receiving %s" % track.kind)
         player.addTrack(track)
 
-    channel = pc.createDataChannel("cooordinates")
+    @pc.on("datachannel")
+    def on_datachannel(channel):
+        print(channel.label, "channel created")
+        asyncio.ensure_future(send_circle_coordinates(channel))
 
-    async def send_circle_coordinates():
+    async def send_circle_coordinates(channel):
         while True:
-            channel.send(f"{frame_index.value},{x.value},{y.value}" )
+            data = f"{frame_index.value},{x.value},{y.value}"
+            channel.send(data)
             await asyncio.sleep(VIDEO_PTIME)
-
-    @channel.on("open")
-    def on_open():
-        asyncio.ensure_future(send_circle_coordinates())
-
+    
     while True:
         obj = await signaling.receive()
         if isinstance(obj, RTCSessionDescription):
