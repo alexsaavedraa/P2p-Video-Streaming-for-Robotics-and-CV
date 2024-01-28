@@ -11,13 +11,10 @@ PORT = 1234
 def process_message(message):
     print("Processing Message:", message)
 
-async def run_server(signaling, pc):
-    @pc.on("datachannel")
-    def on_datachannel(channel):
-        print("channel created by remote")
-        @channel.on("message")
-        def on_message(message):
-            process_message(message)
+async def run_server(signaling, pc, channel):
+    @channel.on("message")
+    def on_message(message):
+        process_message(message)
 
     await signaling.connect()
     await pc.setLocalDescription(await pc.createOffer())
@@ -38,15 +35,16 @@ if __name__ == "__main__":
     track = BounceBallStreamTrack()
     pc.addTrack(track)
 
-    channel = pc.createDataChannel("chat")
-    # print("channel created by local")
+    channel = pc.createDataChannel("server")
+    print(channel.label, "channel created locally")
 
     loop = asyncio.get_event_loop()
     try:
         loop.run_until_complete(
             run_server(
                 signaling, 
-                pc
+                pc,
+                channel
             )
         )
     except KeyboardInterrupt:
