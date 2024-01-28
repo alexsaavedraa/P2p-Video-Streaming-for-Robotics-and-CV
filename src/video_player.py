@@ -3,6 +3,7 @@ import numpy
 import asyncio
 from aiortc.contrib.media import (MediaStreamTrack,
                                   MediaStreamError)
+from av import VideoFrame
 
 class VideoStreamPlayer():
     def addTrack(self, track: MediaStreamTrack):
@@ -26,5 +27,7 @@ class VideoStreamPlayer():
                 i+=1
             except MediaStreamError:
                 return
-            cv2.imshow('Frame', frame.to_ndarray()) 
+      
+            cv2.waitKey(10)
+            cv2.imshow('Frame', frame.to_rgb().to_ndarray()) 
         

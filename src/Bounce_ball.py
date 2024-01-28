@@ -28,6 +28,7 @@ class Bounce_ball(VideoStreamTrack):
         self.y = 100
         self.dx = 5
         self.dy = -5
+        self.r = 20
         for i in range(30):
             self.frames.append(self.get_next_frame())
 
@@ -39,25 +40,23 @@ class Bounce_ball(VideoStreamTrack):
         img = np.zeros((L,W,3),dtype='uint8') 
         self.x = self.x+self.dx
         self.y = self.y+self.dy
-        cv2.circle(img,(self.x,self.y),20,(255,0,0),-1)
-        if self.y >=L:
+        cv2.circle(img,(self.x,self.y),self.r,(255,0,0),-1)
+        if self.y >=L-self.r:
             self.dy *= -1
-        elif self.y<=0:
+        elif self.y<=self.r:
             self.dy *= -1
-        if self.x >=W:
+        if self.x >=W-self.r:
             self.dx *= -1
-        elif self.x<=0:
+        elif self.x<=self.r:
             self.dx *= -1
         
         res = VideoFrame.from_ndarray(
-                    img, format="bgr24")
+                    img, format="rgb24")
         return res
 
 
     async def recv(self):
-        
         pts, time_base = await self.next_timestamp()
-
         frame = self.get_next_frame()
         frame.pts = pts
         frame.time_base = time_base
