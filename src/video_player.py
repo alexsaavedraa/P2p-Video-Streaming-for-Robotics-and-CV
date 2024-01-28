@@ -4,9 +4,10 @@ from aiortc.contrib.media import (MediaStreamTrack,
                                   MediaStreamError)
 
 class VideoStreamPlayer():
-    def __init__(self, title:str, image_queue):
+    def __init__(self, title:str, image_queue,x):
         self.title = title
         self.image_queue = image_queue
+        self.x = x
 
     def addTrack(self, track: MediaStreamTrack):
         self.track = track
@@ -23,12 +24,11 @@ class VideoStreamPlayer():
         frame = True
         i = 0
         while frame:
+            print(self.x.value)
             try:
                 frame = await self.track.recv()
             except MediaStreamError: 
                 return
             frame_array = frame.to_rgb().to_ndarray()
-            
             i+=1
-            
             self.image_queue.put(frame_array)

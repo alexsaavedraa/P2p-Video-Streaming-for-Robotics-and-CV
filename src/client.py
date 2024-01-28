@@ -13,15 +13,20 @@ import multiprocessing
 HOST = "127.0.0.1"
 PORT = 1234
 
-def process_frame_array(image_queue, termination_event):
+def process_frame_array(image_queue, termination_event,x,y):
     print("Initializing Image Recognition Thread")
     while not termination_event.is_set():
         image = image_queue.get()
         if image is not None:
             result = process_images(image)
             if result is not None:
+<<<<<<< HEAD
                 pass
                 #print(result)
+=======
+                x.Value('i', result[0])
+                y.Value('i', result[1])
+>>>>>>> 04315a61eec3f2984fc8ea47f3cebf338a36d422
     print("Exiting process a")
 
 def process_images(frame_array):
@@ -45,6 +50,7 @@ async def run_client(signaling, pc, player):
     def on_track(track):
         print("Receiving %s" % track.kind)
         player.addTrack(track)
+       
 
     channel = pc.createDataChannel("chat")
     print("channel created by local")
@@ -76,19 +82,23 @@ if __name__ == "__main__":
     #Multiprocess setup here
     image_queue = multiprocessing.Queue()
     termination_event = multiprocessing.Event()
-    process_a = multiprocessing.Process(target=process_frame_array, args=(image_queue,termination_event))
+    x = multiprocessing.Value('i')
+    y = multiprocessing.Value('i')
+    process_a = multiprocessing.Process(target=process_frame_array, args=(image_queue,termination_event, x,y))
     process_a.start()
 
     signaling = TcpSocketSignaling(host=HOST, port=PORT)
     pc = RTCPeerConnection()
-    player = VideoStreamPlayer("Nimble Challenge", image_queue)
+    player = VideoStreamPlayer("Nimble Challenge", image_queue, x)
     loop = asyncio.get_event_loop()
     try:
         loop.run_until_complete(
             run_client(
                 signaling,
                 pc,
-                player
+                player,
+                
+
             )
         )
     except KeyboardInterrupt:
