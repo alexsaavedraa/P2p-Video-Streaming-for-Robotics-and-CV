@@ -3,8 +3,11 @@ from aiortc.contrib.signaling import (TcpSocketSignaling,
 from aiortc import (RTCPeerConnection, 
                     RTCSessionDescription)
 import asyncio
+import cv2
+import numpy as np
+import time
 
-from video_player import VideoStreamPlayer, process_images
+from video_player import VideoStreamPlayer
 import multiprocessing
 
 HOST = "127.0.0.1"
@@ -17,15 +20,42 @@ def process_frame_array(image_queue, termination_event):
         if image is not None:
             result = process_images(image)
             if result is not None:
-                print(result)
+                pass
+                #print(result)
     print("Exiting process a")
-               
+
+def process_images(frame_array):
+    gray = cv2.cvtColor(frame_array, cv2.COLOR_BGR2GRAY) 
+    gray_blurred = cv2.blur(gray, (3, 3)) 
+    detected_circles = cv2.HoughCircles(gray_blurred,  
+                    cv2.HOUGH_GRADIENT, 1, 20, param1 = 10, 
+                param2 = 30, minRadius = 15, maxRadius = 25) 
+    if detected_circles is not None:
+        detected_circles = np.uint16(np.around(detected_circles)) 
+        for pt in detected_circles[0, :]: 
+            a, b, r = pt[0], pt[1], pt[2] 
+            cv2.circle(frame_array, (a, b), r, (0, 255, 0), 2) 
+            cv2.circle(frame_array, (a, b), 1, (0, 0, 255), 3) 
+            cv2.waitKey(10) 
+            cv2.imshow("Detected Circle", frame_array)
+            return a,b,r
 
 async def run_client(signaling, pc, player):
     @pc.on("track")
     def on_track(track):
         print("Receiving %s" % track.kind)
         player.addTrack(track)
+
+    channel = pc.createDataChannel("chat")
+    print("channel created by local")
+
+    async def send_circle_coordinates():
+        while True:
+            channel.send(str(time.time()))
+            await asyncio.sleep(1)
+    @channel.on("open")
+    def on_open():
+        asyncio.ensure_future(send_circle_coordinates())
 
     while True:
         obj = await signaling.receive()
@@ -39,6 +69,8 @@ async def run_client(signaling, pc, player):
             print("Exiting")
             break
 
+        
+
 if __name__ == "__main__":
     print("Initializing Client...")   
     #Multiprocess setup here
@@ -46,7 +78,6 @@ if __name__ == "__main__":
     termination_event = multiprocessing.Event()
     process_a = multiprocessing.Process(target=process_frame_array, args=(image_queue,termination_event))
     process_a.start()
-
 
     signaling = TcpSocketSignaling(host=HOST, port=PORT)
     pc = RTCPeerConnection()

@@ -11,6 +11,13 @@ PORT = 1234
 
 
 async def run_server(signaling, pc):
+    @pc.on("datachannel")
+    def on_datachannel(channel):
+        print("channel created by remote")
+        @channel.on("message")
+        def on_message(message):
+            print("From Client", message)
+
     await signaling.connect()
     await pc.setLocalDescription(await pc.createOffer())
     await signaling.send(pc.localDescription)
@@ -28,6 +35,7 @@ if __name__ == "__main__":
     pc = RTCPeerConnection()
     track = BounceBallStreamTrack()
     pc.addTrack(track)
+    channel = pc.createDataChannel("coordinates")
     loop = asyncio.get_event_loop()
     try:
         loop.run_until_complete(
