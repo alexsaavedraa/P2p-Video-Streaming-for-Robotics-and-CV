@@ -14,10 +14,11 @@ import multiprocessing
 HOST = "127.0.0.1"
 PORT = 1234
 
-def process_frame_array(image_queue, termination_event,x,y):
+def process_frame_array(image_queue, termination_event,x,y,frame_index):
     print("Initializing Image Recognition Thread")
     while not termination_event.is_set():
         image = image_queue.get()
+        frame_index.value += 1
         if image is not None:
             result = process_images(image)
             if result is not None:
@@ -51,7 +52,7 @@ async def run_client(signaling, pc, player):
 
     async def send_circle_coordinates():
         while True:
-            channel.send(f"({x.value}, {y.value})" )
+            channel.send(f"{frame_index.value},{x.value},{y.value}" )
             await asyncio.sleep(VIDEO_PTIME)
 
     @channel.on("open")
@@ -79,8 +80,9 @@ if __name__ == "__main__":
 
     x = multiprocessing.Value(c_int, 0)
     y = multiprocessing.Value(c_int, 0)
+    frame_index = multiprocessing.Value(c_int, 0)
 
-    process_a = multiprocessing.Process(target=process_frame_array, args=(image_queue,termination_event, x,y))
+    process_a = multiprocessing.Process(target=process_frame_array, args=(image_queue,termination_event, x,y,frame_index))
     process_a.start()
 
     signaling = TcpSocketSignaling(host=HOST, port=PORT)

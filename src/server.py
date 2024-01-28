@@ -9,7 +9,7 @@ HOST = "127.0.0.1"
 PORT = 1234
 
 def process_message(message):
-    print("From Client:", message)
+    print("Processing Message:", message)
 
 async def run_server(signaling, pc):
     @pc.on("datachannel")
@@ -38,8 +38,9 @@ if __name__ == "__main__":
     track = BounceBallStreamTrack()
     pc.addTrack(track)
 
-    channel = pc.createDataChannel("coordinates")
-    
+    channel = pc.createDataChannel("chat")
+    # print("channel created by local")
+
     loop = asyncio.get_event_loop()
     try:
         loop.run_until_complete(
