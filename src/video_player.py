@@ -30,4 +30,6 @@ class VideoStreamPlayer():
                 return
             frame_array = frame.to_rgb().to_ndarray()
             i+=1
+            cv2.waitKey(10) 
+            cv2.imshow("Client: Received Ball Animation", frame_array)
             self.image_queue.put(frame_array)

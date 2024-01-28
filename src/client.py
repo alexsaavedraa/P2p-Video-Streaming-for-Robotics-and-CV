@@ -38,8 +38,6 @@ def process_images(frame_array):
             a, b, r = pt[0], pt[1], pt[2] 
             cv2.circle(frame_array, (a, b), r, (0, 255, 0), 2) 
             cv2.circle(frame_array, (a, b), 1, (0, 0, 255), 3) 
-            cv2.waitKey(10) 
-            cv2.imshow("Detected Circle", frame_array)
             return a,b,r
 
 async def run_client(signaling, pc, player):

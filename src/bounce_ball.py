@@ -9,6 +9,8 @@ class Ball():
         self.y = y
         self.r = r
         self.color = color
+        self.frames = []
+        self.frame_dict = {}
 
     def increment_position(self, dx, dy):
         self.x += dx
@@ -24,6 +26,7 @@ class BounceBallStreamTrack(VideoStreamTrack):
         super().__init__()
         self.counter = 0
         self.frames = []
+        self.frame_dict = {}
         self.frameWidth = 480
         self.frameHeight = 640
         self.ball = Ball(x=100, 
@@ -62,6 +65,8 @@ class BounceBallStreamTrack(VideoStreamTrack):
         pts, time_base = await self.next_timestamp()
         frame = self.get_next_frame()
         self.frames.append([self.counter, self.ball.x, self.ball.y])
+        self.frame_dict[self.counter] = [self.ball.x, self.ball.y]
+
         frame.pts = pts
         frame.time_base = time_base
         self.counter += 1
