@@ -20,13 +20,8 @@ def process_frame_array(image_queue, termination_event,x,y):
         if image is not None:
             result = process_images(image)
             if result is not None:
-<<<<<<< HEAD
-                pass
-                #print(result)
-=======
                 x.Value('i', result[0])
                 y.Value('i', result[1])
->>>>>>> 04315a61eec3f2984fc8ea47f3cebf338a36d422
     print("Exiting process a")
 
 def process_images(frame_array):
@@ -50,7 +45,6 @@ async def run_client(signaling, pc, player):
     def on_track(track):
         print("Receiving %s" % track.kind)
         player.addTrack(track)
-       
 
     channel = pc.createDataChannel("chat")
     print("channel created by local")
@@ -59,6 +53,7 @@ async def run_client(signaling, pc, player):
         while True:
             channel.send(str(time.time()))
             await asyncio.sleep(1)
+
     @channel.on("open")
     def on_open():
         asyncio.ensure_future(send_circle_coordinates())
@@ -96,9 +91,7 @@ if __name__ == "__main__":
             run_client(
                 signaling,
                 pc,
-                player,
-                
-
+                player
             )
         )
     except KeyboardInterrupt:
