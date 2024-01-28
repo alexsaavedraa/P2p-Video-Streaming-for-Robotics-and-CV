@@ -4,7 +4,7 @@ from aiortc.contrib.media import (MediaStreamTrack,
                                   MediaStreamError)
 
 class VideoStreamPlayer():
-    def __init__(self, title:str, image_queue,x):
+    def __init__(self, title:str, image_queue):
         self.title = title
         self.image_queue = image_queue
    
