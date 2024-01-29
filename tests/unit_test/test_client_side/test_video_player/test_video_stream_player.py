@@ -1,13 +1,15 @@
 from src.client.video_player import VideoStreamPlayer, MediaStreamError
-from unittest.mock import Mock, AsyncMock
+from av import VideoFrame
+from unittest.mock import Mock, MagicMock, AsyncMock
 import pytest
-import asyncio
+from multiprocessing import Queue
 
 @pytest.fixture()
 def mock_player():
     title = "Test"
-    q = Mock("queue")
-    return VideoStreamPlayer(title, q)
+    q = MagicMock(Queue)
+    player = VideoStreamPlayer(title, q)
+    return player
 
 def test_init():
     # Given...
@@ -56,17 +58,21 @@ async def test_stop(mocker, mock_player):
 @pytest.mark.asyncio
 async def test_run_track(mocker, mock_player):
     # Given...
-    mock_track = mocker.patch("src.client.video_player.MediaStreamTrack")
-    mock_recv = mocker.patch("src.client.video_player.MediaStreamTrack.recv")
-    mock_track.recv = mock_recv
+    frame = MagicMock(VideoFrame)
+    frame.to_rgb.return_value.to_ndarray.return_value = [1,1,1]
+    mock_track = AsyncMock()
+    mock_track.recv.side_effect=[frame, 
+                                 MediaStreamError()]
     mock_player.addTrack(mock_track)
-    frame = Mock("frame")
-    mock_recv.configure_mock(side_effect=[asyncio.Future().set_result(frame), MediaStreamError()])
+    mock_player.image_queue = Queue()
+    
+    
     mock_cv2 = mocker.patch("src.client.video_player.cv2")
 
     # When...
     await mock_player.run_track()
-    expected_array = frame.to_rgb.return_value.to_ndarray.return_value
+    expected_array =  [1,1,1]
+
     # Then...
     mock_cv2.imshow.assert_called_with("Client: Received Ball Animation", expected_array)
-    mock_player.image_queue.put.assert_called_with(expected_array)
+    assert mock_player.image_queue.get() == expected_array
