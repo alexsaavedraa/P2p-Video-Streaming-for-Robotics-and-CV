@@ -4,7 +4,8 @@ from aiortc import (VideoStreamTrack)
 from av import VideoFrame
 
 class Ball():
-    def __init__(self, x, y, r, color):
+    '''Accepts x,y,r and a color. creates a  ball that can be moved with increment_position(dx,dy)'''
+    def __init__(self, x: int, y: int, r: int, color: tuple):
         self.x = x
         self.y = y
         self.r = r
@@ -12,20 +13,21 @@ class Ball():
         self.frames = []
         self.frame_dict = {}
 
-    def increment_position(self, dx, dy):
+    def increment_position(self, dx: str, dy:str) -> None:
+        '''increments ball's location by dx, dy'''
         self.x += dx
         self.y += dy
             
         
 class BounceBallStreamTrack(VideoStreamTrack):
     """
-    A video track that returns an animated flag.
+    A VideoStreamTrack that bounces a ball around a screen, contains frame_dict that 
+    has frame index as key and ball location  as value
     """
 
     def __init__(self):
         super().__init__()
         self.counter = 0
-        self.frames = []
         self.frame_dict = {}
         self.frameWidth = 480
         self.frameHeight = 640
@@ -36,7 +38,9 @@ class BounceBallStreamTrack(VideoStreamTrack):
         self.dx = 5
         self.dy = -5
         
-    def get_next_frame(self):    
+    def get_next_frame(self):
+        '''generates a frame with the ball incremented by dx dy;
+          detects wall collisions.'''    
         img = np.zeros((self.frameHeight, self.frameWidth, 3),
                         dtype='uint8') 
         
@@ -62,9 +66,9 @@ class BounceBallStreamTrack(VideoStreamTrack):
 
 
     async def recv(self):
+        '''sends a frame to VideostreamTrack, and  updates the frame dictionary'''
         pts, time_base = await self.next_timestamp()
         frame = self.get_next_frame()
-        self.frames.append([self.counter, self.ball.x, self.ball.y])
         self.frame_dict[self.counter] = [self.ball.x, self.ball.y]
 
         frame.pts = pts

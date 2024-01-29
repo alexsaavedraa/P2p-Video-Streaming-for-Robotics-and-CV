@@ -14,7 +14,7 @@ import multiprocessing
 HOST = "127.0.0.1"
 PORT = 1234
 
-def process_frame_array(image_queue, termination_event,x,y,frame_index):
+def process_frame_array(image_queue:multiprocessing.Queue, termination_event:multiprocessing.Event,x:int,y:int,frame_index:int):
     print("Initializing Image Recognition Thread")
     while not termination_event.is_set():
         image = image_queue.get()
