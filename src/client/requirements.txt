@@ -1,6 +1,6 @@
 numpy
 aiortc
-opencv-python
+opencv-python-headless
 pytest
 pytest-cov
 pytest-asyncio

@@ -27,6 +27,6 @@ class VideoStreamPlayer():
             except MediaStreamError: 
                 return
             frame_array = frame.to_rgb().to_ndarray()
-            cv2.waitKey(10) 
-            cv2.imshow("Client: Received Ball Animation", frame_array)
+            #cv2.waitKey(10) 
+            #cv2.imshow("Client: Received Ball Animation", frame_array)
             self.image_queue.put(frame_array)

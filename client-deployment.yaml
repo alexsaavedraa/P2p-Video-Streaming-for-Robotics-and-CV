@@ -12,22 +12,10 @@ spec:
       labels:
         app: client
     spec:
+      hostNetwork: true
       containers:
       - name: client-container
         imagePullPolicy: Always
-        image: alexsaavedraa/nimble_challenge-client:latest # Replace with your actual image name and tag
-        ports:
-        - containerPort: 8080  # Port exposed by the client container
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: client-service
-spec:
-  selector:
-    app: client
-  ports:
-  - protocol: TCP
-    port: 8080  # Port exposed externally
-    targetPort: 8080  # Port exposed by the client container
+        image: alexsaavedraa/client:v2 # Replace with your actual image name and tag
+
 

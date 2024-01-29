@@ -61,9 +61,10 @@ def display_error(coords_act: list, coords_pred: list, error: float) -> None:
                       (254,254,254), 
                       2, 
                       cv2.LINE_AA) 
+    print(error)
     
-    cv2.imshow("Server: Error Detection", img)
-    cv2.waitKey(1)
+    #cv2.imshow("Server: Error Detection", img)
+    #cv2.waitKey(1)
     
 
 def process_message(message: str, 
