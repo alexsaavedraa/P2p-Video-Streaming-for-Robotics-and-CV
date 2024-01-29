@@ -2,8 +2,8 @@ from aiortc.contrib.signaling import (TcpSocketSignaling,
                                       BYE)
 from aiortc import (RTCPeerConnection, 
                     RTCSessionDescription,
-                    RTCDataChannel)
-from bounce_ball import BounceBallStreamTrack
+                    RTCDataChannel,
+                    MediaStreamTrack)
 import asyncio
 import numpy as np
 import cv2
@@ -67,7 +67,7 @@ def display_error(coords_act: list, coords_pred: list, error: float) -> None:
     
 
 def process_message(message: str, 
-                    track:BounceBallStreamTrack) -> None:
+                    track:MediaStreamTrack) -> None:
     """Takes in message and the the ball bounce object. Aligns the 
        generated video frame with the client detected coordinates frame
 
@@ -90,7 +90,7 @@ def process_message(message: str,
 
 async def run_server(signaling: TcpSocketSignaling, 
                      pc: RTCPeerConnection, 
-                     track: BounceBallStreamTrack,
+                     track: MediaStreamTrack,
                      channel: RTCDataChannel ):
     '''Consumes all signalling: connects, creates offer, then consumes the signaling. Handles datastream messages'''
     @channel.on("message") # pragma: no cover
@@ -110,6 +110,8 @@ async def run_server(signaling: TcpSocketSignaling,
             break
 
 if __name__ == "__main__": # pragma: no cover
+    from bounce_ball import BounceBallStreamTrack
+
     print("Initializing Server...")
     signaling = TcpSocketSignaling(host=HOST, port=PORT)
     pc = RTCPeerConnection()

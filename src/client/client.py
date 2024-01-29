@@ -8,7 +8,6 @@ import cv2
 import numpy as np
 from ctypes import c_int
 
-from video_player import VideoStreamPlayer
 import multiprocessing
 
 HOST = "127.0.0.1"
@@ -88,6 +87,7 @@ async def run_client(signaling, pc, player):
 
         
 if __name__ == "__main__": # pragma: no cover
+    from video_player import VideoStreamPlayer
     print("Initializing Client...")   
     #Multiprocess setup here
     image_queue = multiprocessing.Queue()

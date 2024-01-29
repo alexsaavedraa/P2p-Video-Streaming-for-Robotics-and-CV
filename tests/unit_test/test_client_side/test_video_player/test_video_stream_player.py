@@ -65,8 +65,6 @@ async def test_run_track(mocker, mock_player):
                                  MediaStreamError()]
     mock_player.addTrack(mock_track)
     mock_player.image_queue = Queue()
-    
-    
     mock_cv2 = mocker.patch("src.client.video_player.cv2")
 
     # When...
