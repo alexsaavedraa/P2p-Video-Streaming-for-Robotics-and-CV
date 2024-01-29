@@ -34,7 +34,7 @@ def display_error(coords1, coords2, error):
                    thickness=2)
     
     
-    
+    img = cv2.putText(img, f'Error: {str(round(error,1)+0.0)}px',(30,30), cv2.FONT_HERSHEY_SIMPLEX , 1 ,(254,254,254), 2, cv2.LINE_AA) 
     cv2.imshow("Server: Error Detection", img)
     cv2.waitKey(1)
     
