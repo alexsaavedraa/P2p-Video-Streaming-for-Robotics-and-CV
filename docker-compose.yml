@@ -6,11 +6,11 @@ services:
       context: .
       dockerfile: Dockerfile.server
     ports:
-      - "8080:1234"
+      - "1234:1234"
 
   client:
     build:
       context: .
       dockerfile: Dockerfile.client
     ports:
-      - "8081:1234"
+      - "8080:1234"

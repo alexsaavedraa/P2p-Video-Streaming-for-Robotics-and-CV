@@ -14,9 +14,10 @@ spec:
     spec:
       containers:
       - name: client-container
+        imagePullPolicy: Always
         image: alexsaavedraa/nimble_challenge-client:latest # Replace with your actual image name and tag
         ports:
-        - containerPort: 1234  # Port exposed by the client container
+        - containerPort: 8080  # Port exposed by the client container
 ---
 apiVersion: v1
 kind: Service
@@ -28,5 +29,5 @@ spec:
   ports:
   - protocol: TCP
     port: 8080  # Port exposed externally
-    targetPort: 1234  # Port exposed by the client container
+    targetPort: 8080  # Port exposed by the client container
 
