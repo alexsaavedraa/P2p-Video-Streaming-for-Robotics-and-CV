@@ -77,7 +77,7 @@ async def run_client(signaling, pc, player):
             break
 
         
-if __name__ == "__main__":
+if __name__ == "__main__": # pragma: no cover
     print("Initializing Client...")   
     #Multiprocess setup here
     image_queue = multiprocessing.Queue()
