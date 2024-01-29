@@ -15,6 +15,7 @@ HOST = "127.0.0.1"
 PORT = 1234
 
 def process_frame_array(image_queue:multiprocessing.Queue, termination_event:multiprocessing.Event,x:int,y:int,frame_index:int):
+    '''Takes the next frame from the multiprocessing queue, runs a circle detection'''
     print("Initializing Image Recognition Thread")
     while not termination_event.is_set():
         image = image_queue.get()
@@ -27,6 +28,7 @@ def process_frame_array(image_queue:multiprocessing.Queue, termination_event:mul
     print("Exiting process a")
 
 def process_images(frame_array):
+    '''Uses HoughCircles to find circles, returns x,y, and radius'''
     gray = cv2.cvtColor(frame_array, cv2.COLOR_BGR2GRAY) 
     gray_blurred = cv2.blur(gray, (3, 3)) 
     detected_circles = cv2.HoughCircles(gray_blurred,  
@@ -36,8 +38,8 @@ def process_images(frame_array):
         detected_circles = np.uint16(np.around(detected_circles)) 
         for pt in detected_circles[0, :]: 
             a, b, r = pt[0], pt[1], pt[2] 
-            cv2.circle(frame_array, (a, b), r, (0, 255, 0), 2) 
-            cv2.circle(frame_array, (a, b), 1, (0, 0, 255), 3) 
+            #cv2.circle(frame_array, (a, b), r, (0, 255, 0), 2) 
+            #cv2.circle(frame_array, (a, b), 1, (0, 0, 255), 3) 
             return a,b,r
 
 async def run_client(signaling, pc, player):

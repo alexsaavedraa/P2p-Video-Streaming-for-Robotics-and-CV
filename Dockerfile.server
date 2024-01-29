@@ -1,0 +1,16 @@
+FROM python:3.12
+
+WORKDIR /app
+
+COPY /src/server/server.py /app/
+COPY /src/server/bounce_ball.py /app/
+COPY /src/server/requirements.txt /app/
+
+# Install server dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+
+EXPOSE 1234
+
+# Command to run the server
+CMD ["python", "server.py"]
