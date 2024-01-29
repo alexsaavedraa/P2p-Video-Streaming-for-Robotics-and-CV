@@ -1,4 +1,4 @@
-from src.bounce_ball import Ball
+from src.server.bounce_ball import Ball
 
 def test_init():
     # Given...

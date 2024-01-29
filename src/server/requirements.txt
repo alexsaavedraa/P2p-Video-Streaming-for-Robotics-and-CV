@@ -2,3 +2,6 @@ numpy
 aiortc
 opencv-python
 pytest
+pytest-cov
+pytest-asyncio
+pytest-mock
