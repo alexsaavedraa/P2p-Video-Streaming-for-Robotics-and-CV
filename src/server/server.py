@@ -4,7 +4,7 @@ from aiortc import (RTCPeerConnection,
                     RTCSessionDescription,
                     RTCDataChannel)
 import asyncio
-from bounce_ball import BounceBallStreamTrack
+from src.server.bounce_ball import BounceBallStreamTrack
 import numpy as np
 import cv2
 

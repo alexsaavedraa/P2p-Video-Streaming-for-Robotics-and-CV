@@ -21,19 +21,24 @@ def process_frame_array(image_queue:multiprocessing.Queue, termination_event:mul
         image = image_queue.get()
         frame_index.value += 1
         if image is not None:
-            result = process_images(image)
+            result = process_image(image)
             if result is not None:
                 x.value = result[0]
                 y.value = result[1]
     print("Exiting process a")
 
-def process_images(frame_array):
+def process_image(frame_array):
     '''Uses HoughCircles to find circles, returns x,y, and radius'''
     gray = cv2.cvtColor(frame_array, cv2.COLOR_BGR2GRAY) 
     gray_blurred = cv2.blur(gray, (3, 3)) 
-    detected_circles = cv2.HoughCircles(gray_blurred,  
-                    cv2.HOUGH_GRADIENT, 1, 20, param1 = 10, 
-                param2 = 30, minRadius = 15, maxRadius = 25) 
+    detected_circles = cv2.HoughCircles(gray_blurred, 
+                                        cv2.HOUGH_GRADIENT, 
+                                        1, 
+                                        20, 
+                                        param1 = 10, 
+                                        param2 = 30, 
+                                        minRadius = 15, 
+                                        maxRadius = 25) 
     if detected_circles is not None:
         detected_circles = np.uint16(np.around(detected_circles)) 
         for pt in detected_circles[0, :]: 

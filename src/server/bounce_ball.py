@@ -1,11 +1,20 @@
 import cv2
 import numpy as np
-from aiortc import (VideoStreamTrack)
+from aiortc import VideoStreamTrack
 from av import VideoFrame
 
 class Ball():
-    '''Accepts x,y,r and a color. creates a  ball that can be moved with increment_position(dx,dy)'''
+    """Ball object to keep track of position, size, and color.
+    """    
     def __init__(self, x: int, y: int, r: int, color: tuple):
+        """initializes the ball
+
+        Args:
+            x (int): x coordinate of ball
+            y (int): y coordinate of ball
+            r (int): radius of ball
+            color (tuple): color of ball using (r, g, b) integer values between 0-254
+        """        
         self.x = x
         self.y = y
         self.r = r
@@ -14,12 +23,18 @@ class Ball():
         self.frame_dict = {}
 
     def increment_position(self, dx: str, dy:str) -> None:
-        '''increments ball's location by dx, dy'''
+        """increments the position of the ball based on x and y velocity
+
+        Args:
+            dx (str): velocity of ball along x axis
+            dy (str): velocity of ball along y axis
+        """        
         self.x += dx
         self.y += dy
             
         
 class BounceBallStreamTrack(VideoStreamTrack):
+
     """
     A VideoStreamTrack that bounces a ball around a screen, contains frame_dict that 
     has frame index as key and ball location  as value
@@ -52,13 +67,14 @@ class BounceBallStreamTrack(VideoStreamTrack):
 
         self.ball.increment_position(self.dx, self.dy)
 
-        if self.ball.y >=self.frameHeight-self.ball.r:
+        if self.ball.y >= self.frameHeight-self.ball.r:
             self.dy *= -1
-        elif self.ball.y<=self.ball.r:
+        elif self.ball.y <= self.ball.r:
             self.dy *= -1
-        if self.ball.x >=self.frameWidth-self.ball.r:
+            
+        if self.ball.x >= self.frameWidth-self.ball.r:
             self.dx *= -1
-        elif self.ball.x<=self.ball.r:
+        elif self.ball.x <= self.ball.r:
             self.dx *= -1
         
         res = VideoFrame.from_ndarray(img, format="rgb24")
@@ -66,7 +82,7 @@ class BounceBallStreamTrack(VideoStreamTrack):
 
 
     async def recv(self):
-        '''sends a frame to VideostreamTrack, and  updates the frame dictionary'''
+        '''sends a frame to VideostreamTrack, and updates the frame dictionary'''
         pts, time_base = await self.next_timestamp()
         frame = self.get_next_frame()
         self.frame_dict[self.counter] = [self.ball.x, self.ball.y]
